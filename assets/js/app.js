@@ -5,7 +5,7 @@ $('document').ready(function(){
         console.log(dadosFormulario);
         $.ajax({
             type : 'POST',
-            url  : 'send_email.php',
+            url  : 'app/send_email.php',
             data : dadosFormulario,
             dataType: 'json',
             success: function(response){

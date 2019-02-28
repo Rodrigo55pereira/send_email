@@ -1,4 +1,9 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+
+require '../vendor/autoload.php';
+
 header('Content-type: text/html; charset=utf-8');
 
 // Conta de Email no servidor de hospedagem
@@ -6,6 +11,12 @@ define('SERVIDOR', 'smtp.gmail.com');
 
 // Para onde será enviado o contato
 define('DESTINO', 'rodrigo55pereira@gmail.com');
+
+// Usuário que irá receber o email
+define('USER', 'rodrigo55pereira@gmail.com');
+
+// Senha usuário que vai receber o email
+define('PASS', 'rodrigo@2017');
 
 // Validar se os valores foram enviados do formulário
 if (isset($_POST)):
@@ -48,14 +59,20 @@ endif;
 // Função para envio de e-mail usando a função nativa do PHP mail()
 function sendEmail($para, $mensagem){
 
-    $headers = "From: ".SERVIDOR."\n";
-    $headers .= "Reply-To: $para\n";
-    $headers .= "Subject: Email de contato: \n";
-    $headers .= "Return-Path: ".SERVIDOR."\n";
-    $headers .= "MIME-Version: 1.0\n";
-    $headers .= "X-Priority: 3\n";
-    $headers .= "Content-Type: text/html; charset=UTF-8\n";
+    $mail = new PHPMailer();
+    $mail->IsSMTP();		// Ativar SMTP
+    $mail->SMTPDebug = 0;		// Debugar: 1 = erros e mensagens, 2 = mensagens apenas
+    $mail->SMTPAuth = true;		// Autenticação ativada
+    $mail->SMTPSecure = 'ssl';	// SSL REQUERIDO pelo GMail
+    $mail->Host = 'smtp.gmail.com';	// SMTP utilizado
+    $mail->Port = 587;  		// A porta 587 deverá estar aberta em seu servidor
+    $mail->Username = USER;
+    $mail->Password = PASS;
+    $mail->SetFrom(USER, 'Rodrigo');
+    $mail->Subject = 'Envio de contato';
+    $mail->Body = $mensagem;
+    $mail->AddAddress($para);
 
-    $retorno = mail($para, "Email de contato", nl2br($mensagem), $headers);
+    $retorno = $mail->send();
     return $retorno;
 }
