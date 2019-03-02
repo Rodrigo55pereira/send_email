@@ -1,5 +1,6 @@
 <?php
 
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\PHPMailer;
 
 require '../vendor/autoload.php';
@@ -60,16 +61,19 @@ endif;
 function sendEmail($para, $mensagem){
 
     $mail = new PHPMailer();
+    $mail->CharSet = "utf8";
     $mail->IsSMTP();		// Ativar SMTP
-    $mail->SMTPDebug = 0;		// Debugar: 1 = erros e mensagens, 2 = mensagens apenas
+    $mail->SMTPDebug = 3;		// Debugar: 1 = erros e mensagens, 2 = mensagens apenas
     $mail->SMTPAuth = true;		// Autenticação ativada
     $mail->SMTPSecure = 'ssl';	// SSL REQUERIDO pelo GMail
     $mail->Host = 'smtp.gmail.com';	// SMTP utilizado
     $mail->Port = 587;  		// A porta 587 deverá estar aberta em seu servidor
     $mail->Username = USER;
     $mail->Password = PASS;
-    $mail->SetFrom(USER, 'Rodrigo');
-    $mail->Subject = 'Envio de contato';
+    $mail->FromName = $_POST['nome'];
+    $mail->From = "rodrigo55pereira@gmail.com";
+    $mail->isHTML(true);
+    $mail->Subject = 'Novo contato - ' . $_POST['nome'] . " - " . date("H:i") . " - " . date("d/m/Y");
     $mail->Body = $mensagem;
     $mail->AddAddress($para);
 
